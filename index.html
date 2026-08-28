@@ -140,7 +140,7 @@
   .copy-msg{ font-size:10.5px; color:var(--go); margin-top:6px; height:14px; letter-spacing:.04em; text-transform:uppercase;}
 
   .section-divider{ display:flex; align-items:center; gap:10px; margin:28px 0 14px; }
-  .section-divider .stripe{ flex:1; height:6px; background:repeating-linear-gradient(45deg, var(--hazard) 0 8px, var(--void) 8px 16px); }
+  .section-divider .stripe{ flex:1; height:6px; background:repeating-linear-gradient(-45deg, var(--hazard) 0 9px, var(--void) 9px 18px); background-size:25.46px 25.46px; animation:stripeMove 0.55s linear infinite; will-change:background-position; } @keyframes stripeMove{from{background-position:0 0;}to{background-position:-25.46px 25.46px;}} @media(prefers-reduced-motion:reduce){.section-divider .stripe{animation:stripeMove 1.2s linear infinite;}}
   .section-divider .label{ font-size:13px; letter-spacing:.12em; white-space:nowrap; }
 
   .diff-row{ display:flex; gap:6px; margin-bottom:12px; }
@@ -232,6 +232,21 @@
   .arena-actions button{ flex:1; }
   .arena-actions button.secondary{ background:var(--steel-line); color:var(--bone); }
 
+  .achievement-group{margin-top:14px;}
+  .achievement-group-title{font-size:10px;letter-spacing:.14em;color:var(--bone-dim);margin:0 0 7px;}
+  .achievement-card{display:flex;align-items:center;gap:10px;padding:10px;background:var(--gunmetal-2);border:2px solid var(--steel-line);margin-bottom:6px;transition:.15s;}
+  .achievement-card.unlocked{border-color:var(--hazard);box-shadow:inset 4px 0 0 var(--hazard);}
+  .achievement-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--void);border:1px solid var(--steel-line);font-size:19px;flex-shrink:0;}
+  .achievement-card.locked .achievement-icon{filter:grayscale(1);opacity:.45;}
+  .achievement-info{min-width:0;flex:1;}
+  .achievement-name{font-size:12px;font-weight:900;letter-spacing:.03em;}
+  .achievement-desc{font-size:10px;color:var(--bone-dim);margin-top:2px;line-height:1.4;}
+  .achievement-status{font:900 9px monospace;letter-spacing:.06em;color:var(--hazard);text-transform:uppercase;white-space:nowrap;}
+  /* Locked achievements never reveal their requirements until unlocked. */
+  .achievement-card.locked .achievement-name,.achievement-card.locked .achievement-desc{filter:blur(5px);user-select:none;}
+  .achievement-card.locked .achievement-name{color:var(--bone-dim);}
+  .achievement-card.locked .achievement-desc{color:var(--bone-dim);}
+  .achievement-card.locked .achievement-status{color:var(--bone-dim);}
   @media (max-width:420px){
     .options{ grid-template-columns:1fr; }
     .brand .rig,.brand .works{ font-size:22px; }
@@ -262,8 +277,19 @@
   .start-btn:active{ transform:translateY(4px); box-shadow:0 2px 0 #7c3517;}
   .menu-panel{ width:min(560px,100%); text-align:center; padding:30px 20px; border:2px solid var(--steel-line);
     background:linear-gradient(180deg,rgba(46,52,56,.96),rgba(21,24,26,.98)); box-shadow:0 25px 80px rgba(0,0,0,.65); margin:auto;}
-  .menu-logo{ font-size:clamp(44px,13vw,78px); line-height:.9; margin-bottom:8px;}
+  .menu-logo{ font-size:clamp(44px,13vw,78px); line-height:.9; margin-bottom:8px; cursor:pointer; user-select:none; transform-origin:center; transition:transform .08s ease, filter .12s ease;}
   .menu-logo .rig{ color:var(--bone);} .menu-logo .works{ color:var(--hazard);}
+  .menu-logo:hover{ filter:brightness(1.18) drop-shadow(0 5px 0 rgba(0,0,0,.35)); transform:translateY(-2px) scale(1.015);}
+  .menu-logo.logo-press{ transform:translateY(5px) scale(.94) rotate(-1deg); filter:brightness(1.28) drop-shadow(0 1px 0 rgba(0,0,0,.5));}
+  .menu-logo.logo-pop{ animation:logoPop .34s cubic-bezier(.2,.8,.25,1);}
+  @keyframes logoPop{0%{transform:scale(.94)}45%{transform:scale(1.08) rotate(1deg)}75%{transform:scale(.98)}100%{transform:scale(1)}}
+  #achievementToast{ position:fixed; left:50%; top:18px; width:min(440px,calc(100% - 24px)); transform:translate(-50%,-140%); z-index:20000; background:linear-gradient(180deg,rgba(46,52,56,.98),rgba(14,16,18,.98)); border:2px solid var(--hazard); box-shadow:0 12px 40px rgba(0,0,0,.75), inset 0 -3px 0 var(--rust); padding:12px 16px; text-align:left; pointer-events:none; opacity:0;}
+  #achievementToast.show{ animation:achievementBannerIn .42s cubic-bezier(.2,.9,.25,1) forwards, achievementBannerOut .4s ease 2.65s forwards;}
+  #achievementToast .toast-kicker{font:900 10px monospace;letter-spacing:.16em;color:var(--hazard);}
+  #achievementToast .toast-main{display:flex;align-items:center;gap:11px;margin-top:4px;font-weight:900;font-size:15px;}
+  #achievementToast .toast-icon{font-size:28px;filter:drop-shadow(0 2px 0 rgba(0,0,0,.5));}
+  @keyframes achievementBannerIn{from{opacity:0;transform:translate(-50%,-140%) scale(.92)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+  @keyframes achievementBannerOut{from{opacity:1;transform:translate(-50%,0) scale(1)}to{opacity:0;transform:translate(-50%,-120%) scale(.96)}}
   .menu-sub{ font-size:11px; letter-spacing:.25em; color:var(--bone-dim); margin-bottom:26px;}
   .play-btn{ width:100%; border:0; background:var(--signal); color:#fff; padding:18px 20px; font-size:20px;
     font-weight:900; letter-spacing:.12em; cursor:pointer; box-shadow:0 6px 0 #8d2419; transition:.12s; font-family:inherit;}
@@ -355,6 +381,8 @@
       <div class="sync-msg mono" id="syncMsg"></div>
     </div>
     <button class="play-btn display" id="playBtn">▶ PLAY SOLO</button>
+    <button class="ghost-btn display" id="achievementsBtn" style="width:100%;margin-top:10px;background:var(--hazard);color:var(--void)">🏆 ACHIEVEMENTS</button>
+    <button class="ghost-btn secondary display" id="startMenuBtn" style="width:100%;margin-top:8px">↩ START MENU</button>
 
     <div class="multi-title display">TWO PLAYERS</div>
     <div class="multi-grid">
@@ -385,6 +413,19 @@
       <button class="theme-btn" data-theme="arctic">ARCTIC</button>
       <button class="theme-btn" data-theme="rust">RUST</button>
     </div>
+  </div>
+</div>
+
+<div id="achievementToast" aria-live="polite"><div class="toast-kicker">ACHIEVEMENT UNLOCKED</div><div class="toast-main"><span class="toast-icon">🏆</span><span>Achievement</span></div></div>
+
+<div id="achievementsOverlay" class="overlay-modal hidden">
+  <div class="overlay-panel achievements-panel">
+    <div class="overlay-head">
+      <span class="overlay-title display">ACHIEVEMENTS</span>
+      <button class="ghost-btn secondary" id="achievementsCloseBtn">Close</button>
+    </div>
+    <div class="overlay-sub mono" id="achievementSummary"></div>
+    <div id="achievementList"></div>
   </div>
 </div>
 
@@ -570,17 +611,17 @@ try{ applyTheme(localStorage.getItem('rigworks-theme') || 'industrial'); }catch(
    ============================================================ */
 const RANKS = [
   {name:'ROOKIE',      wins:0},
-  {name:'SCRAPPER',    wins:3},
-  {name:'CONTENDER',   wins:7},
-  {name:'VETERAN',     wins:15},
-  {name:'CHAMPION',    wins:30},
-  {name:'LEGEND',      wins:50},
+  {name:'NEW RANK: SCRAPPER',    wins:3},
+  {name:'NEW RANK: CONTENDER',   wins:7},
+  {name:'NEW RANK: VETERAN',     wins:15},
+  {name:'NEW RANK: CHAMPION',    wins:30},
+  {name:'NEW RANK: LEGEND',      wins:50},
   {name:'GOD',         wins:500}
 ];
 const PROFILE_KEY = 'rigworks-profile';
 const DAILY_COOLDOWN_MS = 24*60*60*1000;
 
-function defaultProfile(){ return {wins:0, losses:0, draws:0, screws:0, gems:0, unlocked:[], lastDaily:0}; }
+function defaultProfile(){ return {wins:0, losses:0, draws:0, screws:0, gems:0, unlocked:[], lastDaily:0, logoTaps:0, achievements:[]}; }
 
 function loadProfile(){
   try{
@@ -594,7 +635,9 @@ function loadProfile(){
       screws: Number.isFinite(p.screws) ? p.screws : 0,
       gems: Number.isFinite(p.gems) ? p.gems : 0,
       unlocked: Array.isArray(p.unlocked) ? p.unlocked : [],
-      lastDaily: Number.isFinite(p.lastDaily) ? p.lastDaily : 0
+      lastDaily: Number.isFinite(p.lastDaily) ? p.lastDaily : 0,
+       logoTaps: Number.isFinite(p.logoTaps) ? p.logoTaps : 0,
+       achievements: Array.isArray(p.achievements) ? p.achievements : []
     };
   }catch(e){ return defaultProfile(); }
 }
@@ -604,6 +647,108 @@ function saveProfile(p){
 }
 
 let profile = loadProfile();
+
+/* ============================================================
+   ACHIEVEMENTS
+   Inspired by tap-style achievement systems: normal goals are
+   always visible, while secret goals stay blurred until earned.
+   ============================================================ */
+const ACHIEVEMENTS = [
+  {id:'tap1', group:'TAPPING', icon:'👆', name:'TAP STARTER', desc:'Tap the RIGWORKS logo once.', test:p=>p.logoTaps>=1},
+  {id:'tap10', group:'TAPPING', icon:'👆', name:'LOGO FAN', desc:'Tap the RIGWORKS logo 10 times.', test:p=>p.logoTaps>=10},
+  {id:'tap25', group:'TAPPING', icon:'👆', name:'TAP PRO', desc:'Tap the RIGWORKS logo 25 times.', test:p=>p.logoTaps>=25},
+  {id:'tap50', group:'TAPPING', icon:'👆', name:'TAP CHAMPION', desc:'Tap the RIGWORKS logo 50 times.', test:p=>p.logoTaps>=50},
+  {id:'tap100', group:'TAPPING', icon:'👆', name:'LOGO LEGEND', desc:'Tap the RIGWORKS logo 100 times.', test:p=>p.logoTaps>=100},
+  {id:'rankScrapper', group:'RANK', icon:'⬆️', name:'NEW RANK: SCRAPPER', desc:'Reach the SCRAPPER rank.', test:p=>rankForWins(p.wins)>=1},
+  {id:'rankContender', group:'RANK', icon:'⬆️', name:'NEW RANK: CONTENDER', desc:'Reach the CONTENDER rank.', test:p=>rankForWins(p.wins)>=2},
+  {id:'rankVeteran', group:'RANK', icon:'⬆️', name:'NEW RANK: VETERAN', desc:'Reach the VETERAN rank.', test:p=>rankForWins(p.wins)>=3},
+  {id:'rankChampion', group:'RANK', icon:'🏆', name:'NEW RANK: CHAMPION', desc:'Reach the CHAMPION rank.', test:p=>rankForWins(p.wins)>=4},
+  {id:'rankLegend', group:'RANK', icon:'👑', name:'NEW RANK: LEGEND', desc:'Reach the LEGEND rank.', test:p=>rankForWins(p.wins)>=5},
+  {id:'wins1', group:'WINS', icon:'⚔️', name:'FIRST WIN', desc:'Win your first fight.', test:p=>p.wins>=1},
+  {id:'wins10', group:'WINS', icon:'⚔️', name:'TEN WINS', desc:'Win 10 fights.', test:p=>p.wins>=10},
+  {id:'wins25', group:'WINS', icon:'⚔️', name:'FIGHT FAN', desc:'Win 25 fights.', test:p=>p.wins>=25},
+  {id:'wins50', group:'WINS', icon:'🏆', name:'FIFTY WINS', desc:'Win 50 fights.', test:p=>p.wins>=50},
+  {id:'wins100', group:'WINS', icon:'💥', name:'HUNDRED WINS', desc:'Win 100 fights.', test:p=>p.wins>=100},
+  {id:'secretScrews', group:'SECRET', icon:'🔩', name:'SCREW COLLECTOR', desc:'Collect 100 screws.', secret:true, test:p=>p.screws>=100},
+  {id:'secretGems', group:'SECRET', icon:'💎', name:'GEM COLLECTOR', desc:'Collect 100 gems.', secret:true, test:p=>p.gems>=100},
+  {id:'secretWins', group:'SECRET', icon:'☠️', name:'WINNING STREAK', desc:'Win 100 fights.', secret:true, test:p=>p.wins>=100}
+];
+
+function checkAchievements(){
+  let changed=false;
+  const newlyUnlocked=[];
+  ACHIEVEMENTS.forEach(a=>{
+    if(!profile.achievements.includes(a.id) && a.test(profile)){
+      profile.achievements.push(a.id);
+      changed=true;
+      newlyUnlocked.push(a);
+    }
+  });
+  if(changed){
+    saveProfile(profile);
+    renderAchievements();
+    newlyUnlocked.forEach((a,i)=>setTimeout(()=>showAchievementToast(a), i*650));
+  }
+}
+function showAchievementToast(a){
+  const t=document.getElementById('achievementToast');
+  if(!t) return;
+  t.innerHTML='<div class="toast-kicker">ACHIEVEMENT UNLOCKED</div><div class="toast-main"><span class="toast-icon">'+a.icon+'</span><span>'+a.name+'</span></div>';
+  t.classList.remove('show');
+  void t.offsetWidth;
+  t.classList.add('show');
+  clearTimeout(t._hide);
+  t._hide=setTimeout(()=>t.classList.remove('show'),3100);
+}
+function renderAchievements(){
+  const list=document.getElementById('achievementList'); if(!list)return;
+  const unlocked=new Set(profile.achievements);
+  document.getElementById('achievementSummary').textContent=unlocked.size+' / '+ACHIEVEMENTS.length+' UNLOCKED';
+  list.innerHTML='';
+  ['TAPPING','RANK','WINS','SECRET'].forEach(group=>{
+    const items=ACHIEVEMENTS.filter(a=>a.group===group); if(!items.length)return;
+    const wrap=document.createElement('div'); wrap.className='achievement-group';
+    const title=document.createElement('div'); title.className='achievement-group-title display'; title.textContent=group==='SECRET'?'??? SECRET ACHIEVEMENTS':group+' ACHIEVEMENTS'; wrap.appendChild(title);
+    items.forEach(a=>{
+      const done=unlocked.has(a.id); const card=document.createElement('div'); card.className='achievement-card '+(done?'unlocked':'locked')+(a.secret?' secret':'');
+      // Do not tell the player how to unlock anything until it is unlocked.
+      const name=done?a.name:'???';
+      const desc=done?a.desc:'Hidden achievement — unlock it to reveal the challenge.';
+      card.innerHTML='<div class="achievement-icon">'+(done?a.icon:'❓')+'</div><div class="achievement-info"><div class="achievement-name">'+name+'</div><div class="achievement-desc">'+desc+'</div></div><div class="achievement-status">'+(done?'UNLOCKED':'LOCKED')+'</div>';
+      wrap.appendChild(card);
+    });
+    list.appendChild(wrap);
+  });
+}
+function openAchievements(){ checkAchievements(); renderAchievements(); document.getElementById('achievementsOverlay').classList.remove('hidden'); }
+function closeAchievements(){ document.getElementById('achievementsOverlay').classList.add('hidden'); }
+document.getElementById('achievementsBtn').addEventListener('click',openAchievements);
+document.getElementById('achievementsCloseBtn').addEventListener('click',closeAchievements);
+
+function returnToStartMenu(){
+  // Close any menu overlays and return all the way to the title screen.
+  document.querySelectorAll('.overlay-modal').forEach(el=>el.classList.add('hidden'));
+  document.getElementById('mainMenu').classList.add('hidden');
+  document.getElementById('splashMenu').classList.remove('hidden');
+  document.body.classList.add('menu-open');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+document.getElementById('startMenuBtn').addEventListener('click',returnToStartMenu);
+
+function tapRigworksLogo(ev){
+  const logo=ev.currentTarget;
+  logo.classList.remove('logo-press');
+  void logo.offsetWidth;
+  logo.classList.add('logo-press');
+  setTimeout(()=>logo.classList.remove('logo-press'),90);
+  logo.classList.remove('logo-pop');
+  void logo.offsetWidth;
+  logo.classList.add('logo-pop');
+  profile.logoTaps=(profile.logoTaps||0)+1; saveProfile(profile); checkAchievements();
+}
+const rigworksLogo=document.querySelector('.menu-logo');
+if(rigworksLogo) rigworksLogo.addEventListener('click',tapRigworksLogo);
+
 
 function rankForWins(wins){
   let idx = 0;
@@ -632,6 +777,7 @@ function renderRankBadges(){
     el.innerHTML = '<span class="cur-screws">🔩 '+profile.screws+'</span><span class="cur-gems">💎 '+profile.gems+'</span>';
   });
   renderDailyButton();
+  checkAchievements();
 }
 
 const SCREWS_PER_WIN = 25;
@@ -660,7 +806,7 @@ renderRankBadges();
    automatic live sync — the tradeoff for needing zero signup.
    ------------------------------------------------------------ */
 function encodeProfile(p){
-  const payload = {w:p.wins, l:p.losses, d:p.draws, s:p.screws, g:p.gems, u:p.unlocked, t:p.lastDaily, v:2};
+  const payload = {w:p.wins, l:p.losses, d:p.draws, s:p.screws, g:p.gems, u:p.unlocked, t:p.lastDaily, lt:p.logoTaps, a:p.achievements, v:3};
   return 'RW1-' + btoa(JSON.stringify(payload)).replace(/=+$/,'');
 }
 function decodeProfile(code){
@@ -675,7 +821,9 @@ function decodeProfile(code){
     screws: Number.isFinite(payload.s) ? payload.s : 0,
     gems: Number.isFinite(payload.g) ? payload.g : 0,
     unlocked: Array.isArray(payload.u) ? payload.u : [],
-    lastDaily: Number.isFinite(payload.t) ? payload.t : 0
+    lastDaily: Number.isFinite(payload.t) ? payload.t : 0,
+     logoTaps: Number.isFinite(payload.lt) ? payload.lt : 0,
+     achievements: Array.isArray(payload.a) ? payload.a : []
   };
 }
 
@@ -904,7 +1052,7 @@ document.getElementById('dailyClaimBtn').addEventListener('click', () => {
    whatever storage the player chooses to put the file in.
    ------------------------------------------------------------ */
 document.getElementById('fileSaveBtn').addEventListener('click', () => {
-  const payload = {w:profile.wins, l:profile.losses, d:profile.draws, s:profile.screws, g:profile.gems, u:profile.unlocked, t:profile.lastDaily, v:2, game:'rigworks-profile'};
+  const payload = {w:profile.wins, l:profile.losses, d:profile.draws, s:profile.screws, g:profile.gems, u:profile.unlocked, t:profile.lastDaily, lt:profile.logoTaps, a:profile.achievements, v:3, game:'rigworks-profile'};
   const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
