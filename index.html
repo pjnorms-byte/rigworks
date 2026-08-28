@@ -170,7 +170,7 @@
   .arena-title{ font-size:12px; letter-spacing:.12em; color:var(--rust); margin-bottom:10px; text-align:center; }
 
   #arenaCanvasWrap{
-    width:100%; height:360px; background:#07090a; border:2px solid var(--steel-line);
+    width:100%; height:460px; background:#07090a; border:2px solid var(--steel-line);
     position:relative; overflow:hidden; margin-bottom:12px; touch-action:none;
     box-shadow:inset 0 0 45px rgba(0,0,0,.75), 0 8px 24px rgba(0,0,0,.35);
   }
@@ -250,7 +250,7 @@
   @media (max-width:420px){
     .options{ grid-template-columns:1fr; }
     .brand .rig,.brand .works{ font-size:22px; }
-    #arenaCanvasWrap{ height:320px; }
+    #arenaCanvasWrap{ height:400px; }
     .countdown{ font-size:64px; }
   }
   @media (prefers-reduced-motion: reduce){ .gauge-fill{ transition:none; } }
@@ -339,6 +339,49 @@
   .result-rank.rank-up{ color:var(--go); animation:rankPulse 1.1s ease-in-out infinite; }
   @keyframes rankPulse{ 0%,100%{opacity:1;} 50%{opacity:.45;} }
   @media(max-width:430px){ .theme-grid{ grid-template-columns:1fr 1fr;} .multi-grid{grid-template-columns:1fr;} .room-code{font-size:25px;} }
+
+  /* ================= SETTINGS / RESET / QUICK MATCH ================= */
+  .reset-btn{ width:100%; margin-top:22px; background:transparent; border:2px solid var(--signal); color:var(--signal);
+    font:900 11px/1.2 inherit; letter-spacing:.1em; padding:12px 10px; cursor:pointer; text-transform:uppercase;}
+  .reset-btn:hover{ background:var(--signal); color:#fff; }
+  .quick-btn{ width:100%; background:var(--go); color:#0c1a10; border:0; font:900 15px/1.2 inherit;
+    letter-spacing:.08em; padding:14px; cursor:pointer; margin-top:8px; box-shadow:0 5px 0 #2f6b45; }
+  .quick-btn:active{ transform:translateY(3px); box-shadow:0 2px 0 #2f6b45; }
+  .quick-btn:disabled{ opacity:.65; cursor:default; }
+  .settings-group{ text-align:left; margin-bottom:18px; padding-bottom:16px; border-bottom:1px dashed var(--steel-line); }
+  .settings-group:last-child{ border-bottom:0; margin-bottom:0; padding-bottom:0; }
+  .settings-label{ font-size:10px; letter-spacing:.14em; color:var(--bone-dim); text-transform:uppercase; margin-bottom:8px; display:flex; justify-content:space-between;}
+  .settings-row{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .settings-row:last-child{ margin-bottom:0; }
+  .settings-row label{ flex:1; font-size:12px; }
+  .settings-row input[type="range"]{ flex:1.4; accent-color:var(--hazard); height:20px; }
+  .settings-row .val{ width:34px; text-align:right; font-family:"SF Mono",monospace; font-size:11px; color:var(--bone-dim); }
+  .toggle-btn{ border:2px solid var(--steel-line); background:var(--void); color:var(--bone-dim); font:900 10px inherit;
+    letter-spacing:.06em; padding:6px 12px; cursor:pointer; text-transform:uppercase; }
+  .toggle-btn.on{ border-color:var(--go); color:var(--go); }
+
+  /* ================= VS SCREEN (bot matchups) ================= */
+  #vsScreen{ position:fixed; inset:0; z-index:10500; display:none; overflow:hidden; background:#050607; }
+  #vsScreen.show{ display:block; }
+  .vs-half{ position:absolute; top:0; bottom:0; width:52%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:20px; transition:transform .55s cubic-bezier(.16,.9,.2,1); }
+  .vs-half.left{ left:0; background:linear-gradient(120deg, var(--gunmetal), var(--gunmetal-2)); transform:translateX(-105%);
+    clip-path:polygon(0 0,100% 0,88% 100%,0 100%); }
+  .vs-half.right{ right:0; background:linear-gradient(-120deg, var(--gunmetal), var(--gunmetal-2)); transform:translateX(105%);
+    clip-path:polygon(12% 0,100% 0,100% 100%,0 100%); text-align:right; align-items:flex-end; }
+  #vsScreen.show .vs-half.left{ transform:translateX(0); }
+  #vsScreen.show .vs-half.right{ transform:translateX(0); }
+  .vs-emblem{ font-size:54px; margin-bottom:10px; filter:drop-shadow(0 4px 0 rgba(0,0,0,.5)); }
+  .vs-name{ font:900 22px/1.15 Arial,sans-serif; text-transform:uppercase; letter-spacing:.02em; text-shadow:2px 2px 0 rgba(0,0,0,.5); }
+  .vs-half.left .vs-name{ color:var(--hazard); } .vs-half.right .vs-name{ color:var(--rust); }
+  .vs-meta{ font:700 10px "SF Mono",monospace; color:var(--bone-dim); margin-top:8px; letter-spacing:.06em; }
+  .vs-mid{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(0); z-index:2;
+    font:900 46px Arial,sans-serif; color:#fff; text-shadow:0 0 24px var(--hazard), 3px 3px 0 rgba(0,0,0,.6);
+    transition:transform .3s cubic-bezier(.3,1.6,.4,1) .45s; pointer-events:none; }
+  #vsScreen.show .vs-mid{ transform:translate(-50%,-50%) scale(1); }
+  .vs-tag{ position:absolute; top:14px; left:50%; transform:translateX(-50%); font:900 11px monospace; letter-spacing:.3em;
+    color:var(--bone-dim); opacity:0; transition:opacity .3s ease .8s; }
+  #vsScreen.show .vs-tag{ opacity:1; }
 </style>
 </head>
 <body class="menu-open">
@@ -362,25 +405,10 @@
       <button class="ghost-btn" id="shopBtn" style="width:100%">🔩 Shop</button>
       <button class="ghost-btn secondary" id="dailyBtn" style="width:100%">🎁 Daily Reward</button>
     </div>
-    <div class="sync-row">
-      <button class="ghost-btn" id="syncExportBtn" style="width:100%">Get sync code</button>
-      <button class="ghost-btn secondary" id="syncImportBtn" style="width:100%">Enter sync code</button>
-    </div>
-    <div class="sync-row">
-      <button class="ghost-btn" id="fileSaveBtn" style="width:100%">Save to file</button>
-      <button class="ghost-btn secondary" id="fileLoadBtn" style="width:100%">Load from file</button>
-      <input type="file" id="fileLoadInput" accept="application/json,.json" style="display:none">
-    </div>
-    <div class="sync-panel hidden" id="syncPanel">
-      <textarea id="syncField" mono rows="3" placeholder="Your code will appear here"></textarea>
-      <div class="sync-actions">
-        <button class="ghost-btn" id="syncCopyBtn">Copy</button>
-        <button class="ghost-btn" id="syncApplyBtn">Load this code</button>
-        <button class="ghost-btn secondary" id="syncCloseBtn">Close</button>
-      </div>
-      <div class="sync-msg mono" id="syncMsg"></div>
-    </div>
+    <button class="ghost-btn display" id="settingsBtn" style="width:100%;margin-top:8px">⚙ SETTINGS</button>
+
     <button class="play-btn display" id="playBtn">▶ PLAY SOLO</button>
+    <button class="quick-btn display" id="quickMatchBtn">⚡ QUICK MATCH</button>
     <button class="ghost-btn display" id="achievementsBtn" style="width:100%;margin-top:10px;background:var(--hazard);color:var(--void)">🏆 ACHIEVEMENTS</button>
     <button class="ghost-btn secondary display" id="startMenuBtn" style="width:100%;margin-top:8px">↩ START MENU</button>
 
@@ -404,16 +432,88 @@
       <div class="multi-small">Direct peer-to-peer link. Both players build their own rig, then the host starts the match.</div>
     </div>
 
-    <div class="theme-title display">SELECT THEME</div>
-    <div class="theme-grid">
-      <button class="theme-btn active" data-theme="industrial">INDUSTRIAL</button>
-      <button class="theme-btn" data-theme="neon">NEON</button>
-      <button class="theme-btn" data-theme="midnight">MIDNIGHT</button>
-      <button class="theme-btn" data-theme="hazard">HAZARD</button>
-      <button class="theme-btn" data-theme="arctic">ARCTIC</button>
-      <button class="theme-btn" data-theme="rust">RUST</button>
+    <button class="reset-btn" id="resetProgressBtn">⚠ RESET ALL PROGRESS</button>
+  </div>
+</div>
+
+<div id="settingsOverlay" class="overlay-modal hidden">
+  <div class="overlay-panel">
+    <div class="overlay-head">
+      <span class="overlay-title display">SETTINGS</span>
+      <button class="ghost-btn secondary" id="settingsCloseBtn">Close</button>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-label">Audio</div>
+      <div class="settings-row">
+        <label for="musicVolSlider">🎵 Music</label>
+        <input type="range" id="musicVolSlider" min="0" max="100" value="60">
+        <span class="val" id="musicVolVal">60</span>
+      </div>
+      <div class="settings-row">
+        <label for="sfxVolSlider">💥 Sound FX</label>
+        <input type="range" id="sfxVolSlider" min="0" max="100" value="80">
+        <span class="val" id="sfxVolVal">80</span>
+      </div>
+      <div class="settings-row">
+        <label>Mute all</label>
+        <button class="toggle-btn" id="muteToggleBtn">OFF</button>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-label">Select theme</div>
+      <div class="theme-grid">
+        <button class="theme-btn active" data-theme="industrial">INDUSTRIAL</button>
+        <button class="theme-btn" data-theme="neon">NEON</button>
+        <button class="theme-btn" data-theme="midnight">MIDNIGHT</button>
+        <button class="theme-btn" data-theme="hazard">HAZARD</button>
+        <button class="theme-btn" data-theme="arctic">ARCTIC</button>
+        <button class="theme-btn" data-theme="rust">RUST</button>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-label">Cross-device sync code</div>
+      <div class="sync-row">
+        <button class="ghost-btn" id="syncExportBtn" style="width:100%">Get sync code</button>
+        <button class="ghost-btn secondary" id="syncImportBtn" style="width:100%">Enter sync code</button>
+      </div>
+      <div class="sync-panel hidden" id="syncPanel">
+        <textarea id="syncField" mono rows="3" placeholder="Your code will appear here"></textarea>
+        <div class="sync-actions">
+          <button class="ghost-btn" id="syncCopyBtn">Copy</button>
+          <button class="ghost-btn" id="syncApplyBtn">Load this code</button>
+          <button class="ghost-btn secondary" id="syncCloseBtn">Close</button>
+        </div>
+        <div class="sync-msg mono" id="syncMsg"></div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-label">Save file</div>
+      <div class="sync-row">
+        <button class="ghost-btn" id="fileSaveBtn" style="width:100%">Save to file</button>
+        <button class="ghost-btn secondary" id="fileLoadBtn" style="width:100%">Load from file</button>
+        <input type="file" id="fileLoadInput" accept="application/json,.json" style="display:none">
+      </div>
     </div>
   </div>
+</div>
+
+<div id="vsScreen">
+  <div class="vs-tag">GET READY TO RUMBLE</div>
+  <div class="vs-half left">
+    <div class="vs-emblem" id="vsEmblemA">◆</div>
+    <div class="vs-name" id="vsNameA">MY RIG</div>
+    <div class="vs-meta" id="vsMetaA"></div>
+  </div>
+  <div class="vs-half right">
+    <div class="vs-emblem" id="vsEmblemB">⚙</div>
+    <div class="vs-name" id="vsNameB">OPPONENT</div>
+    <div class="vs-meta" id="vsMetaB"></div>
+  </div>
+  <div class="vs-mid">VS</div>
 </div>
 
 <div id="achievementToast" aria-live="polite"><div class="toast-kicker">ACHIEVEMENT UNLOCKED</div><div class="toast-main"><span class="toast-icon">🏆</span><span>Achievement</span></div></div>
@@ -590,6 +690,111 @@ const THEMES = {
   rust:{void:'#160e0b',gunmetal:'#291713',gunmetal2:'#3a211a',line:'#633a2c',hazard:'#e69a3a',rust:'#d04b32',signal:'#a82e26',bone:'#f1dfca',dim:'#b99e87',go:'#73b36f'}
 };
 let themeColors = THEMES.industrial;
+
+/* ============================================================
+   SOUND — music + SFX via WebAudio (no external audio files)
+   ============================================================ */
+const Sound = {
+  ctx:null, musicGain:null, sfxGain:null, muted:false,
+  musicVol:0.6, sfxVol:0.8, musicTimer:null, noteIdx:0,
+  init(){
+    if(this.ctx) return;
+    try{
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.musicGain = this.ctx.createGain(); this.musicGain.gain.value = this.muted ? 0 : this.musicVol;
+      this.musicGain.connect(this.ctx.destination);
+      this.sfxGain = this.ctx.createGain(); this.sfxGain.gain.value = this.muted ? 0 : this.sfxVol;
+      this.sfxGain.connect(this.ctx.destination);
+      this.startMusic();
+    }catch(e){ /* WebAudio unavailable — game still works silently */ }
+  },
+  resume(){ if(this.ctx && this.ctx.state === 'suspended') this.ctx.resume().catch(()=>{}); },
+  setMusicVol(v){ this.musicVol = v; if(this.musicGain) this.musicGain.gain.value = this.muted ? 0 : v; },
+  setSfxVol(v){ this.sfxVol = v; if(this.sfxGain) this.sfxGain.gain.value = this.muted ? 0 : v; },
+  setMuted(m){ this.muted = m; if(this.musicGain) this.musicGain.gain.value = m ? 0 : this.musicVol; if(this.sfxGain) this.sfxGain.gain.value = m ? 0 : this.sfxVol; },
+  beep(freq, dur, type, gainMul){
+    if(!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator(); osc.type = type || 'square';
+    osc.frequency.setValueAtTime(freq, t);
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime((gainMul===undefined?1:gainMul)*0.5, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    osc.connect(g); g.connect(this.sfxGain);
+    osc.start(t); osc.stop(t + dur);
+  },
+  swing(){ this.beep(320,0.09,'square',0.55); },
+  hit(){ this.beep(130,0.2,'sawtooth',1); },
+  countdownTick(){ this.beep(440,0.12,'sine',0.75); },
+  fight(){ this.beep(720,0.4,'sawtooth',1); },
+  click(){ this.beep(600,0.05,'square',0.4); },
+  win(){ [523,659,784,1046].forEach((f,i) => setTimeout(() => this.beep(f,0.32,'triangle',0.9), i*110)); },
+  lose(){ [300,260,220].forEach((f,i) => setTimeout(() => this.beep(f,0.4,'sawtooth',0.8), i*140)); },
+  // Synthesized kick: a low sine thump with a fast pitch/volume drop.
+  kick(){
+    if(!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator(); osc.type = 'sine';
+    osc.frequency.setValueAtTime(150, t);
+    osc.frequency.exponentialRampToValueAtTime(45, t+0.14);
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.9, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t+0.18);
+    osc.connect(g); g.connect(this.musicGain);
+    osc.start(t); osc.stop(t+0.2);
+  },
+  // Original driving power-chord riff (root + fifth, detuned for grit) — an
+  // aggressive boss-battle style track in the spirit of heavy metal/industrial
+  // game scores. Not a cover or transcription of any existing copyrighted song.
+  startMusic(){
+    if(!this.ctx || this.musicTimer) return;
+    // Riff in E minor: root notes with a low, chugging rhythm and occasional gallop.
+    const riff = [
+      {f:82.4,  d:1}, {f:82.4, d:0.5}, {f:82.4, d:0.5}, {f:98.0, d:1},
+      {f:82.4,  d:1}, {f:82.4, d:0.5}, {f:82.4, d:0.5}, {f:73.4, d:1},
+      {f:110.0, d:1}, {f:110.0,d:0.5}, {f:110.0,d:0.5}, {f:98.0, d:1},
+      {f:87.3,  d:1}, {f:87.3, d:0.5}, {f:82.4, d:0.5}, {f:73.4, d:1}
+    ];
+    let step = 0;
+    const STEP_MS = 165; // fast, driving tempo
+    const playStep = () => {
+      if(!this.ctx) return;
+      const note = riff[step % riff.length];
+      const t = this.ctx.currentTime;
+      const dur = note.d * STEP_MS/1000 * 0.92;
+
+      // Power chord: root + perfect fifth, both sawtooth for a distorted-guitar edge
+      [note.f, note.f*1.5].forEach((freq, i) => {
+        const osc = this.ctx.createOscillator(); osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, t);
+        osc.detune.setValueAtTime(i === 0 ? -6 : 6, t);
+        const g = this.ctx.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(0.16, t+0.015);
+        g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+        osc.connect(g); g.connect(this.musicGain);
+        osc.start(t); osc.stop(t+dur+0.02);
+      });
+      // Kick on every step for a driving, aggressive pulse
+      this.kick();
+      step++;
+    };
+    playStep();
+    this.musicTimer = setInterval(playStep, STEP_MS);
+  }
+};
+function loadSoundSettings(){
+  try{
+    const raw = JSON.parse(localStorage.getItem('rigworks-sound') || '{}');
+    Sound.musicVol = raw.musicVol !== undefined ? raw.musicVol : 0.6;
+    Sound.sfxVol = raw.sfxVol !== undefined ? raw.sfxVol : 0.8;
+    Sound.muted = !!raw.muted;
+  }catch(e){}
+}
+function saveSoundSettings(){
+  try{ localStorage.setItem('rigworks-sound', JSON.stringify({musicVol:Sound.musicVol, sfxVol:Sound.sfxVol, muted:Sound.muted})); }catch(e){}
+}
+loadSoundSettings();
 function applyTheme(name){
   const t = THEMES[name] || THEMES.industrial, root = document.documentElement;
   themeColors = t;
@@ -1106,6 +1311,7 @@ document.getElementById('fileLoadInput').addEventListener('change', (ev) => {
 document.getElementById('startBtn').addEventListener('click', () => {
   document.getElementById('splashMenu').classList.add('hidden');
   document.getElementById('mainMenu').classList.remove('hidden');
+  Sound.init(); // first user gesture — browsers require this before audio can play
 });
 
 function closeMenu(){
@@ -1117,6 +1323,98 @@ document.getElementById('playBtn').addEventListener('click', () => { net.role = 
 document.getElementById('menuBtn').addEventListener('click', () => {
   document.getElementById('mainMenu').classList.remove('hidden');
   document.body.classList.add('menu-open');
+  Sound.resume();
+});
+
+/* ============================================================
+   SETTINGS OVERLAY (audio sliders, theme, sync codes, file save/load)
+   ============================================================ */
+function openSettings(){
+  document.getElementById('musicVolSlider').value = Math.round(Sound.musicVol*100);
+  document.getElementById('musicVolVal').textContent = Math.round(Sound.musicVol*100);
+  document.getElementById('sfxVolSlider').value = Math.round(Sound.sfxVol*100);
+  document.getElementById('sfxVolVal').textContent = Math.round(Sound.sfxVol*100);
+  const mb = document.getElementById('muteToggleBtn');
+  mb.textContent = Sound.muted ? 'ON' : 'OFF';
+  mb.classList.toggle('on', Sound.muted);
+  document.getElementById('settingsOverlay').classList.remove('hidden');
+}
+function closeSettings(){ document.getElementById('settingsOverlay').classList.add('hidden'); }
+document.getElementById('settingsBtn').addEventListener('click', openSettings);
+document.getElementById('settingsCloseBtn').addEventListener('click', closeSettings);
+document.getElementById('musicVolSlider').addEventListener('input', e => {
+  const v = +e.target.value; document.getElementById('musicVolVal').textContent = v;
+  Sound.setMusicVol(v/100); saveSoundSettings();
+});
+document.getElementById('sfxVolSlider').addEventListener('input', e => {
+  const v = +e.target.value; document.getElementById('sfxVolVal').textContent = v;
+  Sound.setSfxVol(v/100); saveSoundSettings(); Sound.click();
+});
+document.getElementById('muteToggleBtn').addEventListener('click', e => {
+  Sound.setMuted(!Sound.muted); saveSoundSettings();
+  e.target.textContent = Sound.muted ? 'ON' : 'OFF';
+  e.target.classList.toggle('on', Sound.muted);
+});
+
+/* ============================================================
+   RESET PROGRESS (with warning — this permanently wipes local save data)
+   ============================================================ */
+/* ============================================================
+   QUICK MATCH — drops the player into a "pool" and matches them
+   with an opponent scaled to their current rank. There's no live
+   matchmaking server behind this (RigWorks' online play is direct
+   peer-to-peer via room codes), so the "pool" is simulated locally:
+   it picks from the bot roster and difficulty tier that best fits
+   your rank, the same way a rank-based queue would.
+   ============================================================ */
+const quickMatchBtn = document.getElementById('quickMatchBtn');
+quickMatchBtn.addEventListener('click', () => {
+  const problem = overBudget();
+  if(problem){ alert(problem); return; }
+
+  quickMatchBtn.disabled = true;
+  const origLabel = quickMatchBtn.textContent;
+  let dots = 0;
+  const tick = setInterval(() => { dots = (dots+1)%4; quickMatchBtn.textContent = 'SEARCHING FOR OPPONENT' + '.'.repeat(dots); }, 280);
+
+  const searchMs = 1200 + Math.random()*1400;
+  setTimeout(() => {
+    clearInterval(tick);
+    quickMatchBtn.textContent = origLabel;
+    quickMatchBtn.disabled = false;
+
+    // Rank-based pool: higher rank -> tougher difficulty + tougher end of the roster
+    const idx = rankInfo().idx; // 0..6
+    difficulty = idx <= 1 ? 'easy' : (idx <= 4 ? 'normal' : 'hard');
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.toggle('active', b.dataset.diff === difficulty));
+
+    const tierCenter = Math.min(OPPONENTS.length-1, Math.round((idx/6) * (OPPONENTS.length-1)));
+    const spread = [tierCenter-1, tierCenter, tierCenter, tierCenter+1].filter(i => i>=0 && i<OPPONENTS.length);
+    const opp = OPPONENTS[spread[Math.floor(Math.random()*spread.length)]];
+    selectedOpp = opp.id;
+    renderOpponents();
+
+    logLine('— QUICK MATCH found: ' + opp.name + ' —');
+    closeMenu();
+    startLocalMatch();
+  }, searchMs);
+});
+
+document.getElementById('resetProgressBtn').addEventListener('click', () => {
+  const sure = window.confirm(
+    'RESET ALL PROGRESS?\n\n' +
+    'This permanently deletes your rank, wins/losses, screws, gems, unlocked parts, ' +
+    'and achievements on THIS device. It cannot be undone, and there is no backup ' +
+    'unless you already saved a sync code or a file.\n\n' +
+    'Press OK to wipe everything, or Cancel to keep your progress.'
+  );
+  if(!sure) return;
+  try{ localStorage.removeItem(PROFILE_KEY); }catch(e){}
+  profile = defaultProfile();
+  saveProfile(profile);
+  renderRankBadges();
+  renderBuilder();
+  window.alert('Progress reset. Starting fresh as ROOKIE.');
 });
 
 /* ============================================================
@@ -1518,7 +1816,30 @@ function handleNet(msg){
 /* ============================================================
    COMBAT MODEL
    ============================================================ */
-const ARENA_R = 3.30;
+const ARENA_R = 4.40; // bigger box than the original 3.30
+// Static hazards scattered around the bigger floor — kept off the center spawn lane (x=0)
+// so bots don't spawn inside them, but close enough to force players to route around them.
+const OBSTACLES = [
+  {x: 2.35, z: 0.9,  r: 0.55},
+  {x:-2.35, z: 0.9,  r: 0.55},
+  {x: 2.35, z:-0.9,  r: 0.55},
+  {x:-2.35, z:-0.9,  r: 0.55},
+  {x: 0,    z: 2.7,  r: 0.42},
+  {x: 0,    z:-2.7,  r: 0.42}
+];
+function resolveObstacles(b){
+  for(const o of OBSTACLES){
+    const dx = b.x - o.x, dz = b.z - o.z;
+    const d = Math.hypot(dx,dz) || 0.001;
+    const minD = o.r + 0.42; // bot's own rough radius
+    if(d < minD){
+      const nx = dx/d, nz = dz/d;
+      b.x = o.x + nx*minD; b.z = o.z + nz*minD;
+      const into = b.vx*nx + b.vz*nz;
+      if(into < 0){ b.vx -= nx*into*1.3; b.vz -= nz*into*1.3; }
+    }
+  }
+}
 const MATCH_SECONDS = 90;
 
 function hpMaxFor(s){ return Math.round(150 + s.endurance*9 + s.armor*7); }
@@ -1557,6 +1878,7 @@ function resolveAttack(att, def){
   att.atkCd = W.cd;
   att.stam = Math.max(0, att.stam - W.stam);
   att.atkAnim = 0.34;
+  Sound.swing();
 
   const dx = def.x-att.x, dz = def.z-att.z;
   const d = Math.hypot(dx,dz);
@@ -1586,6 +1908,7 @@ function resolveAttack(att, def){
   const nx = d ? dx/d : 0, nz = d ? dz/d : 1;
   def.vx += nx*W.knock; def.vz += nz*W.knock;
   spark((att.x+def.x)/2, (att.z+def.z)/2);
+  Sound.hit();
 
   const txt = '> '+att.name+' connects — '+dmg+' dmg';
   const cls = att.side ? 'hit-p2' : 'hit-p1';
@@ -1717,6 +2040,8 @@ function stepBot(b, foe, dt){
     const out = b.vx*nx + b.vz*nz;
     if(out > 0){ b.vx -= nx*out*1.4; b.vz -= nz*out*1.4; }
   }
+
+  resolveObstacles(b);
 
   // lock-on facing, limited by turn rate
   if(foe){
@@ -1912,39 +2237,53 @@ function initScene(){
   const rim = new THREE.PointLight(0xf2b705, 3.0, 12); rim.position.set(0,3.4,-4); scene.add(rim);
   const fill = new THREE.PointLight(0xc8532d, 2.0, 10); fill.position.set(4,2.4,2); scene.add(fill);
 
-  const floor = new THREE.Mesh(new THREE.CircleGeometry(4.2,64), new THREE.MeshStandardMaterial({color:0x181d20, roughness:.78, metalness:.18}));
+  const floor = new THREE.Mesh(new THREE.CircleGeometry(5.6,64), new THREE.MeshStandardMaterial({color:0x181d20, roughness:.78, metalness:.18}));
   floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; scene.add(floor);
-  const center = new THREE.Mesh(new THREE.CircleGeometry(3.72,64), new THREE.MeshStandardMaterial({color:0x20272b, roughness:.66, metalness:.28}));
+  const center = new THREE.Mesh(new THREE.CircleGeometry(4.96,64), new THREE.MeshStandardMaterial({color:0x20272b, roughness:.66, metalness:.28}));
   center.rotation.x = -Math.PI/2; center.position.y = .008; center.receiveShadow = true; scene.add(center);
 
   const gridMat = new THREE.LineBasicMaterial({color:0x384147, transparent:true, opacity:.42});
-  for(let i=-3;i<=3;i++){
-    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(i,.018,-3.45), new THREE.Vector3(i,.018,3.45)]), gridMat));
-    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-3.45,.018,i), new THREE.Vector3(3.45,.018,i)]), gridMat));
+  for(let i=-4;i<=4;i++){
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(i,.018,-4.6), new THREE.Vector3(i,.018,4.6)]), gridMat));
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-4.6,.018,i), new THREE.Vector3(4.6,.018,i)]), gridMat));
   }
+
+  // Obstacles — crates scattered around the box, matching the OBSTACLES collision list
+  const crateMat = new THREE.MeshStandardMaterial({color:0x6b4a2c, roughness:.85, metalness:.1});
+  const crateTrim = new THREE.MeshStandardMaterial({color:0xf2b705, roughness:.6, metalness:.3});
+  OBSTACLES.forEach(o => {
+    const h = o.r*1.7;
+    const crate = new THREE.Mesh(new THREE.BoxGeometry(o.r*1.7,h,o.r*1.7), crateMat);
+    crate.position.set(o.x, h/2, o.z); crate.castShadow = true; crate.receiveShadow = true;
+    crate.rotation.y = (o.x+o.z)*0.7;
+    scene.add(crate);
+    const band = new THREE.Mesh(new THREE.BoxGeometry(o.r*1.78,h*0.16,o.r*1.78), crateTrim);
+    band.position.set(o.x, h*0.55, o.z); band.rotation.y = crate.rotation.y;
+    scene.add(band);
+  });
 
   const sc = document.createElement('canvas'); sc.width = sc.height = 128;
   const c2 = sc.getContext('2d');
   c2.fillStyle = '#f2b705'; c2.fillRect(0,0,128,128); c2.fillStyle = '#15181a';
   for(let i=-128;i<256;i+=24){ c2.save(); c2.translate(i,0); c2.rotate(Math.PI/4); c2.fillRect(0,-180,12,420); c2.restore(); }
   const tex = new THREE.CanvasTexture(sc); tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(30,1);
-  const ring = new THREE.Mesh(new THREE.RingGeometry(3.88,4.24,64), new THREE.MeshStandardMaterial({map:tex, roughness:.5, metalness:.15}));
+  const ring = new THREE.Mesh(new THREE.RingGeometry(5.17,5.65,64), new THREE.MeshStandardMaterial({map:tex, roughness:.5, metalness:.15}));
   ring.rotation.x = -Math.PI/2; ring.position.y = .025; ring.receiveShadow = true; scene.add(ring);
-  const steel = new THREE.Mesh(new THREE.TorusGeometry(3.86,.065,10,96), metal(0x8a9296,.85,.22));
+  const steel = new THREE.Mesh(new THREE.TorusGeometry(5.15,.065,10,96), metal(0x8a9296,.85,.22));
   steel.rotation.x = Math.PI/2; steel.position.y = .05; scene.add(steel);
 
   const railMat = new THREE.MeshStandardMaterial({color:0x586168, metalness:.9, roughness:.22, transparent:true, opacity:.8});
-  for(let i=0;i<16;i++){
-    const a = i/16*Math.PI*2;
+  for(let i=0;i<20;i++){
+    const a = i/20*Math.PI*2;
     const post = new THREE.Mesh(new THREE.BoxGeometry(.1,1.05,.1), railMat);
-    post.position.set(Math.cos(a)*4.12,.54,Math.sin(a)*4.12); scene.add(post);
+    post.position.set(Math.cos(a)*5.49,.54,Math.sin(a)*5.49); scene.add(post);
   }
-  const rail = new THREE.Mesh(new THREE.TorusGeometry(4.12,.045,8,96), railMat);
+  const rail = new THREE.Mesh(new THREE.TorusGeometry(5.49,.045,8,96), railMat);
   rail.rotation.x = Math.PI/2; rail.position.y = 1.02; scene.add(rail);
 
   crowd = [];
-  scene.add(crowdRow(4.75,0.04,22,0.22,0.34));
-  scene.add(crowdRow(5.65,0.38,22,0.26,0.42));
+  scene.add(crowdRow(6.33,0.04,26,0.22,0.34));
+  scene.add(crowdRow(7.53,0.38,26,0.26,0.42));
 
   // spark pool
   sparks = [];
@@ -2081,7 +2420,11 @@ function loop(now){
     sim.countdown -= dt;
     const n = Math.ceil(sim.countdown);
     const el = document.getElementById('countdown');
-    el.textContent = n > 0 ? String(n) : 'FIGHT';
+    const label = n > 0 ? String(n) : 'FIGHT';
+    if(el.textContent !== label){
+      el.textContent = label;
+      if(n > 0) Sound.countdownTick(); else Sound.fight();
+    }
     if(sim.countdown <= -0.55){ el.classList.remove('show'); sim.phase = 'fight'; }
   }
   else if(sim.phase === 'fight' && me && foe){
@@ -2199,6 +2542,13 @@ function render2D(){
     c.beginPath(); c.moveTo(-ARENA_R*scale,i*scale); c.lineTo(ARENA_R*scale,i*scale); c.stroke();
   }
   c.globalAlpha = 1;
+  OBSTACLES.forEach(o => {
+    c.save(); c.translate(o.x*scale, o.z*scale);
+    c.fillStyle = '#6b4a2c'; c.strokeStyle = '#f2b705'; c.lineWidth = 3;
+    const s = o.r*1.7*scale;
+    c.fillRect(-s/2,-s/2,s,s); c.strokeRect(-s/2,-s/2,s,s);
+    c.restore();
+  });
   [0,1].forEach(i => {
     const b = bots[i]; if(!b) return;
     c.save();
@@ -2285,9 +2635,10 @@ function startLocalMatch(){
   sim.online = online;
 
   const myCfg = {name:(document.getElementById('botName').value.trim() || 'MY RIG'), stats:playerStats(), wtype:playerWeaponType()};
+  const oppRecord = online ? null : (OPPONENTS.find(x => x.id === selectedOpp) || OPPONENTS[0]);
   const foeCfg = online
     ? {name:net.remoteBuild.name, stats:net.remoteBuild.stats, wtype:net.remoteBuild.wtype}
-    : (function(){ const o = OPPONENTS.find(x => x.id === selectedOpp) || OPPONENTS[0]; return {name:o.name, stats:o.stats, wtype:o.wtype}; })();
+    : {name:oppRecord.name, stats:oppRecord.stats, wtype:oppRecord.wtype};
 
   if(online && net.role === 'guest'){
     setMultiStatus('Ready. Waiting for the host to start.');
@@ -2295,6 +2646,19 @@ function startLocalMatch(){
     return;
   }
 
+  if(online){
+    launchMatch(myCfg, foeCfg, online);
+  } else {
+    // Bot fight — show a Smash-Bros-style VS screen first, then launch
+    showVsScreen(
+      {name: myCfg.name, emblem:'◆', meta: rankInfo().name},
+      {name: foeCfg.name, emblem: oppRecord.emblem, meta: (oppRecord.tag || '').toUpperCase()},
+      () => launchMatch(myCfg, foeCfg, online)
+    );
+  }
+}
+
+function launchMatch(myCfg, foeCfg, online){
   clearBotGroups();
   bots[0] = makeBot(myCfg, 0);
   bots[1] = makeBot(foeCfg, 1);
@@ -2322,6 +2686,23 @@ function startLocalMatch(){
     send({type:'start', hostName:bots[0].name, hostStats:bots[0].stats, hostWtype:bots[0].wtype});
   }
   if(!rafId){ sim.last = performance.now(); rafId = requestAnimationFrame(loop); }
+}
+
+/* ============================================================
+   VS SCREEN — Smash-Bros-style matchup card shown before bot fights
+   ============================================================ */
+function showVsScreen(a, b, callback){
+  const el = document.getElementById('vsScreen');
+  document.getElementById('vsNameA').textContent = a.name;
+  document.getElementById('vsEmblemA').textContent = a.emblem;
+  document.getElementById('vsMetaA').textContent = a.meta || '';
+  document.getElementById('vsNameB').textContent = b.name;
+  document.getElementById('vsEmblemB').textContent = b.emblem;
+  document.getElementById('vsMetaB').textContent = b.meta || '';
+  el.classList.add('show');
+  Sound.beep(220,0.5,'sawtooth',0.7);
+  setTimeout(() => Sound.beep(880,0.3,'square',0.8), 450);
+  setTimeout(() => { el.classList.remove('show'); callback(); }, 1900);
 }
 
 function beginMatchFromNet(msg){
@@ -2369,6 +2750,8 @@ function endMatch(reason, winnerIdx){
   else if(win === -1){ head = 'DRAW'; cls = 'draw'; sub = reason === 'ko' ? 'DOUBLE KNOCKOUT' : 'DEAD EVEN ON DAMAGE'; }
   else if(win === 0){ head = 'YOU WIN'; cls = 'win'; sub = reason === 'ko' ? 'KNOCKOUT — '+b.name+' IS DEAD IN THE BOX' : 'WINNER ON DAMAGE'; }
   else { head = 'YOU LOSE'; cls = 'lose'; sub = reason === 'ko' ? 'KNOCKOUT BY '+b.name : b.name+' WINS ON DAMAGE'; }
+
+  if(win === 0) Sound.win(); else if(win === 1) Sound.lose();
 
   const hd = document.getElementById('resultHead');
   hd.textContent = head; hd.className = 'result-head display ' + cls;
